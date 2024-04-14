@@ -1,0 +1,11 @@
+func twoSum(_ nums: [Int], _ target: Int) -> [Int] {
+        var dict: [Int: Int] = [:]
+    for idx in 0 ..< nums.count {
+        if let index = dict[target - nums[idx]] {
+            return [index, idx]
+        } else {
+            dict[nums[idx]] = idx
+        }
+    }
+    return []
+    }
