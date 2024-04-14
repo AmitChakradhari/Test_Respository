@@ -1,0 +1,19 @@
+func maxSubArray(_ nums: [Int]) -> Int {
+    if let max = nums.max(), max <= 0 {
+        return max
+    }
+    var maxSoFar = -1, max = 0
+    var s = 0, e = 0
+    for (idx, ele) in nums.enumerated() {
+        max += ele
+        if max < 0 {
+            max = 0
+            s = idx + 1
+        }
+        if max > maxSoFar {
+            maxSoFar = max
+            e = idx
+        }
+    }
+    return maxSoFar
+    }
