@@ -1,0 +1,34 @@
+func mergeSort(a: [Int], low: Int, high: Int) -> ([Int], Int) {
+    if low == high { return ([a[low]], 0) }
+    var count = 0
+    let mid: Int = (low + high)/2
+    let (left, lInvCount) = mergeSort(a: a, low: low, high: mid)
+    let (right, rInvCount)  = mergeSort(a: a, low: mid + 1, high: high)
+    
+    count += lInvCount + rInvCount
+    
+    var k = 0
+    var i = 0
+    var j = 0
+    var ra: [Int] = []
+    
+    while i < left.count && j < right.count {
+        if left[i] > right [j] {
+            ra.append(right[j])
+            j += 1
+            count += left.count - i
+        } else {
+            ra.append(left[i])
+            i += 1
+        }
+    }
+    while i < left.count {
+        ra.append(left[i])
+        i += 1
+    }
+    while j < right.count {
+        ra.append(right[j])
+        j += 1
+    }
+    return (ra, count)
+}
