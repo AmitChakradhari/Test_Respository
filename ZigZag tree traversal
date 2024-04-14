@@ -1,0 +1,84 @@
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public var val: Int
+ *     public var left: TreeNode?
+ *     public var right: TreeNode?
+ *     public init() { self.val = 0; self.left = nil; self.right = nil; }
+ *     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+ *     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+ *         self.val = val
+ *         self.left = left
+ *         self.right = right
+ *     }
+ * }
+ */
+ extension TreeNode: Equatable {
+    public static func == (lhs: TreeNode, rhs: TreeNode) -> Bool {
+        guard lhs.val == rhs.val else { return false }
+        if (lhs.left == nil && rhs.left != nil) || (lhs.right != nil && rhs.right == nil) {
+            return false
+        }
+        return (lhs.left == rhs.left) && (lhs.right == rhs.right)
+    }
+}
+
+class Solution {
+    class Node: Equatable {
+    static func == (lhs: Node, rhs: Node) -> Bool {
+        lhs.value == rhs.value
+    }
+    
+    
+    let value: TreeNode
+    var next: Node? = nil
+    
+    init(value: TreeNode, next: Node? = nil) {
+        self.value = value
+        self.next = next
+    }
+}
+    func levelOrder(_ root: TreeNode?) -> [[Int]] {
+        guard let root = root else { return [] }
+    var result: [[Int]] = []
+    let rootNode = Node(value: root)
+    var i: Node? = rootNode
+    var j: Node? = rootNode
+    var last: Node? = rootNode
+    var tempArray: [Int] = []
+    while i != nil {
+        
+        while i != j {
+            tempArray.append(i?.value.val ?? 0)
+            if let leftTreeNode = i?.value.left {
+                let leftNode = Node(value: leftTreeNode)
+                last?.next = leftNode
+                last = leftNode
+            }
+            if let rightTreeNode = i?.value.right {
+                let rightNode = Node(value: rightTreeNode)
+                last?.next = rightNode
+                last = rightNode
+            }
+            i = i?.next
+        }
+        // i == j
+        tempArray.append(i?.value.val ?? 0)
+        if let leftTreeNode = i?.value.left {
+            let leftNode = Node(value: leftTreeNode)
+            last?.next = leftNode
+            last = leftNode
+        }
+        if let rightTreeNode = i?.value.right {
+            let rightNode = Node(value: rightTreeNode)
+            last?.next = rightNode
+            last = rightNode
+        }
+        i = i?.next
+        result.append(tempArray)
+        tempArray = []
+        j = last
+    }
+    return result
+    }
+}
