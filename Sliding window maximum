@@ -1,0 +1,105 @@
+class Node {
+    let value: (value: Int, index: Int) // value
+    var prev: Node?
+    var next: Node?
+    
+    init(value: (Int, Int), prev: Node? = nil, next: Node? = nil) {
+        self.value = value
+        self.prev = prev
+        self.next = next
+    }
+}
+
+func maxSlidingWindow(_ nums: [Int], _ k: Int) -> [Int] {
+    
+    var deque: Node?
+    var first: Node?
+    var last: Node?
+    var result: [Int] = []
+    for i in 0 ..< nums.count {
+        print("i: \(i)")
+        if deque == nil {
+            // no elements, add elements
+            deque = Node(value: (nums[i], i))
+            first = deque
+            last = deque
+            print("35 deque nil")
+        } else {
+            // check if reached/ crosing the limit
+            if var lastIndex = last?.value.index,
+               var firstIndex = first?.value.index,
+               lastIndex - firstIndex >= k - 1 { // 2-0 , 3-1
+                // remove elements from the
+                print("41 limit reached")
+                while lastIndex - firstIndex >= k-1 {
+                    if firstIndex == lastIndex {
+                        // single element
+                        deque = nil
+                        first = nil
+                        last = nil
+                        print("48 single element:")
+                        break
+                    } else {
+                        let tempNode = first
+                        first = first?.next
+                        first?.prev = nil
+                        tempNode?.next = nil
+                        firstIndex = first?.value.index ?? firstIndex
+                        print("55 first Index: \(firstIndex)")
+                    }
+                }
+                // removed all elements to the left and updated first
+            }
+            if let firstValue = first?.value.value,
+                      var lastValue = last?.value.value {
+                // if not crossing the limit
+                // check the incoming value.
+                if nums[i] >= firstValue {
+                    // remove everything as this is the greatest value
+                    deque = nil
+                    deque = Node(value: (nums[i], i))
+                    first = deque
+                    last = deque
+                    print("62 greatest value: \(nums[i])")
+                } else if nums[i] >= lastValue {
+                    // remove values from last till num[i] < lastValue
+                    while nums[i] > lastValue {
+                        let temp = last
+                        last = last?.prev
+                        last?.next = nil
+                        temp?.prev = nil
+                        lastValue = last?.value.value ?? lastValue
+                    }
+                    print("72 bigger value than last: \(lastValue)")
+                    // after deleting add new element
+                    let node = Node(value: (nums[i], i))
+                    last?.next = node
+                    node.prev = last
+                    last = node
+                } else {
+                    // add new element
+                    let node = Node(value: (nums[i], i))
+                    last?.next = node
+                    node.prev = last
+                    last = node
+                    print("84 smaller element \(nums[i])")
+                }
+            } else {
+                // firstIndex is nil || lastindex is nil
+                print("control is coming here")
+                deque = Node(value: (nums[i], i))
+                first = deque
+                last = deque
+            }
+        }
+        if let firstElement = first?.value {
+            if i >= k - 1 {
+                result.append(firstElement.value)
+                print("92: added in result \(result) index: \(i)")
+            }
+        }
+    }
+            return result
+}
+
+print(maxSlidingWindow([1, -1], 1))
