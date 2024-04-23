@@ -1,0 +1,54 @@
+class Stack {
+    typealias ele = (char: Character, count: Int)
+    var arr: [ele] = []
+    
+    func top() -> ele? {
+        return arr.first
+    }
+    
+    func push(element: ele) {
+        if arr.isEmpty {
+            arr.append(element)
+        } else {
+            arr.insert(element, at: 0)
+        }
+    }
+    
+    func pop() {
+        if !arr.isEmpty {
+            arr.removeFirst()
+        }
+    }
+}
+
+func longestValidParentheses(_ s: String) -> Int {
+    let stack = Stack()
+    var max = 0
+    var tempMax = 0
+    let arr = Array(s)
+    for char in arr {
+        print("38 char: \(char)")
+        if let top = stack.top() {
+            if top.char == "(" && char == ")" {
+                print("matching")
+                tempMax = top.count + 2 + tempMax
+                if max < tempMax {
+                    max = tempMax
+                }
+                stack.pop()
+            } else {
+                stack.push(element: (char, tempMax))
+                tempMax = 0
+                print("push non empty")
+            }
+        } else  {
+            // empty
+            stack.push(element: (char, tempMax))
+            tempMax = 0
+            print("push empty")
+        }
+    }
+    return max
+}
+
+print(longestValidParentheses("()(()())"))
