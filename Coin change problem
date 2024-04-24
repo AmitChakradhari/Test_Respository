@@ -1,0 +1,41 @@
+func coinChange(_ coins: [Int], _ amount: Int) -> Int {
+    var coinRow: [Int] = [0]
+    coinRow.append(contentsOf: coins.sorted())
+    //print("coins \(coinRow)")
+    var amountColumn: [Int] = []
+    for i in 0 ... amount {
+        amountColumn.append(i)
+    }
+    //print("colum \(amountColumn)")
+    var matrix: [[Int]] = Array(repeating: Array(repeating: 0, count: amountColumn.count),
+                                count: coinRow.count)
+    for i in 1..<amountColumn.count {
+        matrix[0][i] = -1
+    }
+    //print("19 matrix: \(matrix)")
+    for i in  1..<coinRow.count {
+        for j in 1..<amountColumn.count {
+            print("\n ij \(i)\(j)")
+            if amountColumn[j] >= coinRow[i] {
+                //print(" \(amountColumn[j]) >= \(coinRow[i])")
+                let newCoins = 1 + matrix[i][j - coinRow[i]]
+
+                if newCoins > 0 && matrix[i-1][j] == -1 {
+                    matrix[i][j] = newCoins
+                } else if newCoins < matrix[i-1][j] {
+                    matrix[i][j] = newCoins
+                } else {
+                    matrix[i][j] = matrix[i-1][j]
+                }
+            } else {
+                // smaller, set above row result
+                matrix[i][j] = matrix[i-1][j]
+            }
+            //print("\n 35 ij \(i)\(j) mat: \(matrix)")
+        }
+    }
+    print("\n mat: \(matrix)")
+    return matrix[coinRow.count - 1][amountColumn.count - 1]
+}
+
+print(coinChange([186,419,83,408], 6249))
