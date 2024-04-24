@@ -1,0 +1,32 @@
+func lengthOfLIS(_ nums: [Int]) -> Int {
+    var length: [Int] = Array.init(repeating: 1, count: nums.count)
+    if nums.isEmpty {
+        return 0
+    } else if nums.count == 1 {
+        return 1
+    }
+    for i in 1 ..< nums.count {
+        for j in 0 ..< i {
+            if nums[j] < nums[i] {
+                if ((length[j] + 1) > length[i]) {
+                    length[i] = length[j] + 1
+                }
+            }
+        }
+    }
+    var maxLength = 1
+    for leng in length {
+        if leng > maxLength {
+            maxLength = leng
+        }
+    }
+    return maxLength
+}
+
+/**
+ Input: nums = [10,9,2,5,3,7,101,18]
+ Output: 4
+ Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4.
+ */
+
+print(lengthOfLIS([7,7,7,7,7,7,7]))
