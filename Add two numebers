@@ -1,0 +1,56 @@
+func addTwoNumbers(_ l1: ListNode?, _ l2: ListNode?) -> ListNode? {
+        var l11 = l1
+    var l22 = l2
+    var carry = 0
+    var resultNode: ListNode?
+    var head: ListNode?
+
+    while l11 != nil || l22 != nil || carry != 0 {
+        let totalSum = (l11?.val ?? 0) + (l22?.val ?? 0) + carry
+        let value = totalSum%10
+        carry = totalSum/10
+        let node = ListNode(value)
+        if resultNode == nil {
+            resultNode = node
+            head = resultNode
+        } else {
+            head?.next = node
+            head = node
+        }
+        l11 = l11?.next
+        l22 = l22?.next
+    }
+    return resultNode
+    }
+
+
+ public class ListNode {
+      public var val: Int
+      public var next: ListNode?
+      public init() { self.val = 0; self.next = nil; }
+      public init(_ val: Int) { self.val = val; self.next = nil; }
+      public init(_ val: Int, _ next: ListNode?) { self.val = val; self.next = next; }
+      func printList() {
+          var curr: ListNode? = self
+          while curr != nil {
+              print("\(curr?.val ?? -90)")
+              curr = curr?.next
+          }
+      }
+  }
+
+let l1 = ListNode(2)
+let fourNode = ListNode(4)
+let threeNode = ListNode(9)
+l1.next = fourNode
+fourNode.next = threeNode
+let l2 = ListNode(5)
+let sixNode = ListNode(6)
+let fourNdoe = ListNode(4)
+let nineNideNode = ListNode(9)
+l2.next = sixNode
+sixNode.next = fourNdoe
+fourNdoe.next = nineNideNode
+
+//reverseLinkList(list: l2)?.printList()
+addTwoNumbers(l1, l2)?.printList()
