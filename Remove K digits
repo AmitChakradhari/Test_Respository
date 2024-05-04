@@ -1,0 +1,58 @@
+func removeKdigits(_ num: String, _ k: Int) -> String {
+    if k >= num.count {
+        return "0"
+    }
+    if k == 0 { return num }
+    var num  = num
+    // find first inversion point
+    var idx = num.startIndex
+    while num.index(idx, offsetBy: 1) < num.endIndex {
+        print("25 \(idx)")
+        if let smallNum = num[idx].wholeNumberValue,
+           let currentNum = num[num.index(idx, offsetBy: 1)].wholeNumberValue {
+            if currentNum < smallNum {
+                break
+            } else {
+                idx = num.index(idx, offsetBy: 1)
+            }
+        } else {
+            break
+        }
+    }
+    
+    if idx == num.endIndex {
+        // last index, remove all k items
+        return String(num.dropLast(k))
+    } else {
+        num.remove(at: idx)
+        // check for leading zeroes
+        var start = num.startIndex
+        var len = 0
+        while start < num.endIndex {
+            if let int = num[start].wholeNumberValue,
+             int == 0 {
+                len += 1
+                start = num.index(after: start)
+            } else {
+                break
+            }
+        }
+        num.removeFirst(len)
+        return removeKdigits(String(num), k-1)
+    }
+}
+
+
+
+print(removeKdigits("10020", 1))
+
+/**
+ Input: num = "1432219", k = 3
+ Output: "1219"
+ 12334
+ 43321
+ 33333
+ 128360
+ 12360
+ 
+ */
