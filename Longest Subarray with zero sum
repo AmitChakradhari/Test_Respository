@@ -1,0 +1,25 @@
+func subarraySum(_ nums: [Int], _ k: Int) -> Int {
+    var maxLength = 0
+    var sum = 0
+    var dict: [Int: Int] = [:]
+    for i in 0 ..< nums.count {
+        sum += nums[i]
+        if sum == 0 {
+            maxLength = i + 1
+        } else {
+            // check if sum already exists
+            if let idx = dict[sum] {
+                // idx + 1 to i is zero
+                if (i - idx) > maxLength {
+                    maxLength = i - idx
+                }
+            } else {
+                // number DNE, add it
+                dict[sum] = i
+            }
+        }
+    }
+    return maxLength
+}
+
+print(subarraySum([3, 0, -1, -2, 3, 0, -2], 0))
