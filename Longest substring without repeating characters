@@ -1,0 +1,43 @@
+func lengthOfLongestSubstring(_ s: String) -> Int {
+    if s.isEmpty { return 0 }
+    var dict: [Character: Int] = [:]
+    var i = 0
+    var maxLength = 0
+    var startIndex = s.startIndex
+    for (idx, char) in s.enumerated() {
+        print("new char \(char) indx \(idx)")
+        if let characterIndex = dict[char] {
+            // character is present
+            // check if present index is below i
+            if characterIndex < i {
+                // index can be updated
+                dict[char] = idx
+                print(" characterIndex < i \(characterIndex) < \(i) ")
+            } else if characterIndex >= i {
+                // repeating characters, update
+                
+                let length = idx - 1 - i + 1
+                if length > maxLength {
+                    maxLength = length
+                }
+                
+                dict[char] = idx
+                print("repeating \(char) index \(characterIndex) i \(i) length \(length)")
+                i = characterIndex + 1
+            }
+        } else {
+            // character not present, add it
+            print("add")
+            dict[char] = idx
+        }
+    }
+    if s.count - i > maxLength {
+        maxLength = s.count - i
+    }
+ return maxLength
+}
+
+print(lengthOfLongestSubstring("ddvdf"))
+/**
+ mississippi
+ */
