@@ -1,0 +1,38 @@
+func wordBreak(_ s: String, _ wordDict: [String]) -> Bool {
+    if s.isEmpty {
+        return false
+    }
+    let startIndex = s.startIndex
+    let endIndex = s.endIndex
+    for word in wordDict {
+        if word[word.startIndex] == s[startIndex] && s.count >= word.count {
+            var wordMatch = true
+            for i in 1 ..< word.count {
+                if word[word.index(word.startIndex, offsetBy: i)] != s[s.index(startIndex, offsetBy: i)] {
+                    wordMatch = false
+                }
+            }
+            if wordMatch {
+                let newString = s.substring(from: s.index(s.startIndex, offsetBy: word.count))
+                print("Amit_: newString \(newString)")
+                if newString.isEmpty {
+                    return true
+                }
+                wordMatch = wordBreak(newString, wordDict)
+            }
+            if wordMatch {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+
+print(wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", ["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]))
+
+/**
+ "applepenapple", wordDict = ["apple","pen"]
+ 
+ "catsandog", wordDict = ["cats","dog","sand","and","cat"]
+*/
