@@ -1,3 +1,56 @@
+/// Memoisation approach
+
+func wordBreak(_ s: String, _ wordDict: [String]) -> Bool {
+    
+    if s.isEmpty {
+        return false
+    }
+    var dict: [(String.Index): Bool] = [:]
+    
+    return wordDicto(s: s, wordDict: wordDict, dict: &dict, currrentIndex: s.startIndex)
+}
+
+func wordDicto(s: String, wordDict: [String], dict: inout [(String.Index): Bool], currrentIndex: String.Index) -> Bool {
+    let startIndex = s.startIndex
+    let endIndex = s.endIndex
+    if let isMatchingPossible = dict[currrentIndex] {
+        return isMatchingPossible
+    }
+    for word in wordDict {
+        if word[word.startIndex] == s[startIndex] && s.count >= word.count {
+            var wordMatch = true
+            for i in 1 ..< word.count {
+                if word[word.index(word.startIndex, offsetBy: i)] != s[s.index(startIndex, offsetBy: i)] {
+                    wordMatch = false
+                }
+            }
+            if wordMatch {
+                let newString = s.substring(from: s.index(s.startIndex, offsetBy: word.count))
+                print("Amit_: newString \(newString)")
+                if newString.isEmpty {
+                    dict[currrentIndex] = true
+                    return true
+                }
+                wordMatch = wordDicto(s: newString, wordDict: wordDict, dict: &dict, currrentIndex: s.index(s.startIndex, offsetBy: word.count))
+            }
+            if wordMatch {
+                dict[currrentIndex] = true
+                return true
+            }
+        }
+    }
+    dict[currrentIndex] = false
+    return false
+}
+
+print(wordBreak("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaab", ["a","aa","aaa","aaaa","aaaaa","aaaaaa","aaaaaaa","aaaaaaaa","aaaaaaaaa","aaaaaaaaaa"]))
+
+
+
+
+
+
+//// n square approach
 func wordBreak(_ s: String, _ wordDict: [String]) -> Bool {
     if s.isEmpty {
         return false
