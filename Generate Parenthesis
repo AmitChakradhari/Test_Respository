@@ -1,0 +1,28 @@
+class Solution {
+    func findParenthesis(inputString: String, openCount: Int, closeCount: Int, res: inout [String]) {
+    print(openCount, closeCount)
+    if openCount < 0 || closeCount < 0 {
+        return
+    }
+    if openCount == 0 && closeCount == 0 {
+        res.append(inputString)
+        print("\(inputString)")
+        return
+    }
+    if openCount > closeCount {
+        return
+    }
+    // open
+    findParenthesis(inputString: inputString + "(", openCount: openCount - 1, closeCount: closeCount, res: &res)
+    // close
+    findParenthesis(inputString: inputString + ")", openCount: openCount, closeCount: closeCount - 1, res: &res)
+}
+
+    func generateParenthesis(_ n: Int) -> [String] {
+        var res: [String] = []
+    if n == 0 { return []}
+    (findParenthesis(inputString: "", openCount: n , closeCount: n, res: &res))
+    
+    return  res
+    }
+}
