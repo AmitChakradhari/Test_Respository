@@ -27,3 +27,27 @@ func maxValue(houses: [Int], index: Int, values: inout [Int]) -> Int {
 
 
 print(rob(cashes))
+
+
+/// Non -DP
+
+class Solution {
+    func rob(_ nums: [Int]) -> Int {
+        var minusTwo = 0
+    var minusOne = 0
+    for i in 0 ..< nums.count {
+        if i == 0 {
+            minusTwo = nums[i]
+        } else if i == 1 {
+            minusOne = max(minusTwo, nums[i])
+        } else {
+            // include number
+            let includedNumber = nums[i] + minusTwo
+            let notIncludedNumber = minusOne
+            minusTwo = minusOne
+            minusOne = max(includedNumber, notIncludedNumber)
+        }
+    }
+    return max(minusOne, minusTwo)
+    }
+}
