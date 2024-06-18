@@ -1,0 +1,21 @@
+class Solution {
+    func mySqrt(_ x: Int) -> Int {
+        if x == 1 || x == 0 {
+        return x
+    }
+    var low: Int = 1
+    var high: Int = x/2
+    while low <= high {
+        let mid: Int = (low + high)/2
+        let product = mid * mid
+        if product == x {
+            return mid
+        } else if x > product {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+    }
+    return high
+    }
+}
