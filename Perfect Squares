@@ -1,0 +1,41 @@
+class Solution {
+    func findFloorSquare(_ n: Int) -> Int {
+    if n == 1 || n == 0 {
+        return n
+    }
+    var low: Int = 1
+    var high: Int = n/2
+    while low <= high {
+        let mid: Int = (low + high)/2
+        let product = mid * mid
+        if product == n {
+            return mid
+        } else if n > product {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+    }
+    return high
+}
+    func numSquares(_ n: Int) -> Int {
+    if n == 0 { return 0 }
+    var arr: [Int] = Array(repeating: 0, count: n+1)
+    let limit = findFloorSquare(n)
+    if limit * limit == n {
+        return 1
+    }
+    
+    for rootNum in 1 ... limit {
+        let square = rootNum * rootNum
+        for i in square ... n {
+            if arr[i] == 0 {
+                arr[i] = 1 + arr[i - square]
+            } else {
+                arr[i] =  min(arr[i], 1 + arr[i - square])
+            }
+        }
+    }
+    return arr[n]
+}
+}
