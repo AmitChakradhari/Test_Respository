@@ -1,0 +1,32 @@
+func reverseWords(_ s: String) -> String {
+    if s.isEmpty { return s }
+    if s.count == 1 { return s}
+    var result = ""
+    var j = s.index(s.endIndex, offsetBy: -1)
+    var i = j
+    // if space
+    while j > s.startIndex {
+        while (s[j] == " ") && (j >= s.startIndex) {
+            if j == s.startIndex {
+                // reached start with empty space
+                return result
+            }
+            j = s.index(j, offsetBy: -1)
+        }
+        i = j
+        while (s[i] != " " && (i >= s.startIndex)) {
+            if i == s.startIndex {
+                break
+            }
+            i = s.index(i, offsetBy: -1)
+        }
+        if !result.isEmpty {
+            result += " "
+        }
+        let startIndex = s[i] == " " ? s.index(i, offsetBy: 1) : i
+        result += s[startIndex ... j]
+        j = i
+    }
+
+    return result
+}
