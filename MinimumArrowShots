@@ -1,0 +1,22 @@
+func findMinArrowShots(_ points: [[Int]]) -> Int {
+    let sortedArray = arr.sorted(by: { a1, a2 in
+        return a1[1] < a2[1]
+    })
+    var count = 0
+    var currentInterval = Int.min
+    for ele in sortedArray {
+        if currentInterval >= ele[0] && currentInterval <= ele[1] {
+            currentInterval = min(currentInterval, ele[1])
+        } else {
+            count += 1
+            currentInterval = ele[1]
+        }
+    }
+    
+    return count
+}
+
+var arr = [[-2147483648,2147483647]]
+//[[10,16],[2,8],[1,6],[7,12]]
+
+print(findMinArrowShots(arr))
