@@ -1,3 +1,5 @@
+https://leetcode.com/problems/longest-increasing-subsequence/description/
+
 func lengthOfLIS(_ nums: [Int]) -> Int {
     var length: [Int] = Array.init(repeating: 1, count: nums.count)
     if nums.isEmpty {
