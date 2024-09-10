@@ -1,3 +1,5 @@
+https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/description/
+
 func smallestDivisor(_ nums: [Int], _ threshold: Int) -> Int {
     if nums.isEmpty { return 0 }
     var low = nums[0]
