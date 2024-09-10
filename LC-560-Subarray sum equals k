@@ -1,3 +1,5 @@
+https://leetcode.com/problems/subarray-sum-equals-k/description/
+
 func subarraySum(_ nums: [Int], _ k: Int) -> Int {
     var count = 0
     var sum = 0
