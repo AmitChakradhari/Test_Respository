@@ -1,3 +1,5 @@
+https://leetcode.com/problems/remove-k-digits/description/
+
 func removeKdigits(_ num: String, _ k: Int) -> String {
     if k >= num.count {
         return "0"
