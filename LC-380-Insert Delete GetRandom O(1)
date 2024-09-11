@@ -1,0 +1,68 @@
+https://leetcode.com/problems/insert-delete-getrandom-o1/description/
+
+
+class RandomizedSet {
+    var arr: [Int] = []
+    var dict: [Int: Int] = [:]
+    var lastIndex = -1
+    init() {
+        
+    }
+    
+    func insert(_ val: Int) -> Bool {
+        if dict[val] != nil {
+            // already added
+            return false
+        }
+        // add value
+        if lastIndex < 0 {
+            lastIndex = 0
+        } else {
+            lastIndex += 1
+        }
+        dict[val] = lastIndex
+        arr.append(val)
+        print("31 \(dict)")
+        return true
+    }
+    
+    func remove(_ val: Int) -> Bool {
+        if dict[val] == nil {
+            // nothing to delete
+            return false
+        }
+        if let index = dict[val] {
+            if index == lastIndex {
+                dict[val] = nil
+                arr.remove(at: lastIndex)
+                lastIndex -= 1
+            } else {
+                dict[val] = nil // delete item
+                // swap item from Array
+                arr[index] = arr[lastIndex]
+                // update dict
+                dict[arr[lastIndex]] = index
+                // delete item from arry
+                arr.remove(at: lastIndex)
+                // update index
+                lastIndex = lastIndex - 1
+            }
+            
+        }
+        print("50 \(dict)")
+        return true
+    }
+    
+    func getRandom() -> Int {
+        let rand = Int.random(in: 0...lastIndex)
+        return arr[rand]
+    }
+}
+
+let c = RandomizedSet()
+print(c.remove(0))
+print(c.remove(0))
+print(c.insert(0))
+print(c.getRandom())
+print(c.remove(0))
+print(c.insert(0))
