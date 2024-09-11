@@ -1,0 +1,37 @@
+https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/description/
+
+func shipWithinDays(_ weights: [Int], _ days: Int) -> Int {
+    var max = weights[0]
+    var sum = 0
+    for weight in weights {
+        sum += weight
+        if max < weight {
+            max = weight
+        }
+    }
+    
+    var low = max
+    var high = sum
+    while low <= high {
+        var mid: Int = (low + high)/2
+        print("low: \(low) mid \(mid) high \(high)")
+        var day = 1
+        var midWeight = 0
+        for weight in weights {
+            if midWeight + weight <= mid {
+                midWeight += weight
+            } else {
+                midWeight = weight
+                day += 1
+            }
+        }
+        if day > days {
+            low = mid + 1
+        } else {
+            high = mid - 1
+        }
+    }
+    return low
+}
+
+print(shipWithinDays([1,2,3,4,5,6,7,8,9,10], 5))
