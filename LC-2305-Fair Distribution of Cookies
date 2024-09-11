@@ -1,0 +1,31 @@
+https://leetcode.com/problems/fair-distribution-of-cookies/description/
+
+func distributeCookies(_ cookies: [Int], _ k: Int) -> Int {
+    var kArray: [Int] = Array(repeating: 0, count: k)
+    let chocos = cookies.sorted(by: >)
+    var min = chocos[0] // first element
+    kArray[0] = min
+    return distribute(chocos, result: &kArray, index: 1, k: k, cookiesCount: cookies.count)
+}
+
+
+func distribute(_ cookies: [Int], result: inout [Int], index: Int, k: Int, cookiesCount: Int) -> Int {
+    if index >= cookiesCount {
+        return result.max() ?? 0
+    }
+    var min = Int.max
+    for i in 0..<k {
+        result[i] += cookies[index]
+        //print("27: result \(result) index: \(index)")
+        let cnt = distribute(cookies, result: &result, index: index+1, k: k, cookiesCount: cookiesCount)
+        if min > cnt {
+            min = cnt
+        }
+        // unwind
+        result[i] -= cookies[index]
+    }
+    //print("35: \(min)")
+ return min
+}
+//var someArray = [4, 0]
+//print(distribute([4, 7, 5], result: &someArray, index: 1, k: 2, cookiesCount: 3))
