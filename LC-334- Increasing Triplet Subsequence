@@ -1,0 +1,23 @@
+func increasingTriplet(_ nums: [Int]) -> Bool {
+        guard nums.count >= 3 else {
+        return false
+    }
+    var min = nums[0]
+    var maxSequence: Int = Int.max
+
+    for i in 1 ..< nums.count {
+        if nums[i] == min { continue }
+        else if nums[i] < min {
+            min = nums [i]
+            continue
+        } else if nums[i] < maxSequence {
+            maxSequence = nums[i]
+        } else if nums[i] > maxSequence {
+            print("sequence \(min), \(maxSequence), \(nums[i])")
+            return true
+        }
+    }
+    return false
+    }
+
+increasingTriplet([2,1,5,0,4,6])
