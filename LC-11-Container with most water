@@ -1,0 +1,24 @@
+func maxArea(_ height: [Int]) -> Int {
+    let count = height.count
+    if count <= 1 { return 0 }
+    var maxWater = 0
+    var start = 0
+    var end = count - 1
+    while start < end {
+        // calculate water content
+        let tempContent = min(height[start], height[end]) * (end - start)
+        if maxWater < tempContent {
+            maxWater = tempContent
+        }
+        if height[start] <= height[end] {
+            // increase start
+            start += 1
+        } else {
+            // start is higher
+            end -= 1
+        }
+    }
+    return maxWater
+}
+
+print(maxArea([1,8,6,2,5,4,8,3,7]))
