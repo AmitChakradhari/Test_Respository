@@ -1,0 +1,65 @@
+func compress(_ chars: inout [Character]) -> Int {
+    if chars.isEmpty { return 0 }
+    var indexToModify = -1
+    var currentChar: Character?
+    var currentCharCount: Int = 0
+    var totalCharCount: Int = 0
+
+    for i in 0 ..< chars.count {
+        if currentChar == nil {
+            currentChar = chars[i]
+            currentCharCount += 1
+            // update string count
+            totalCharCount += 1
+            indexToModify += 1
+            // update string
+            if let currentChar {
+                chars[indexToModify] = currentChar
+            }
+        } else if chars[i] == currentChar {
+            // repeating char
+            // update count
+            currentCharCount += 1
+            // check for last index
+            if i == chars.count - 1 {
+                if currentCharCount > 1 {
+                    let strCount = String(currentCharCount)
+                    for j in 0 ..< strCount.count {
+                        indexToModify += 1
+                        chars[indexToModify] = strCount[strCount.index(strCount.startIndex, offsetBy: j)]
+                    }
+                    totalCharCount += strCount.count
+                }
+            }
+        } else {
+            // new char
+            // update previos count
+
+            if currentCharCount > 1 {
+                let strCount = String(currentCharCount)
+                for j in 0 ..< strCount.count {
+                    indexToModify += 1
+                    chars[indexToModify] = strCount[strCount.index(strCount.startIndex, offsetBy: j)]
+                }
+                totalCharCount += strCount.count
+            }
+
+            // update currentChar
+            currentChar = chars[i]
+            // reset currentCharCount
+            currentCharCount = 1
+            indexToModify += 1
+            // update existing string
+            chars[indexToModify] = chars[i]
+            // update total count
+            totalCharCount += 1
+        }
+
+        // last index
+    }
+
+    return totalCharCount
+}
+
+var chars: [Character] = ["a","a","b","b","c","c","c"]
+print(compress(&chars), chars)
