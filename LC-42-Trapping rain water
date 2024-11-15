@@ -1,0 +1,54 @@
+func trap(_ height: [Int]) -> Int {
+    if height.count <= 2 {
+         return 0
+    }
+    var water = 0
+    var i = 0
+    var j = height.count - 1
+    var leftMax = height[0]
+    var rightMax = height[height.count - 1]
+    var idx = i
+    if leftMax > rightMax {
+        idx = j
+    }
+    while i <= j {
+        print(" \n i: \(i), j: \(j) idx: \(idx)")
+
+        if (leftMax >= height[idx]) && (height[idx] <= rightMax) {
+            print("value in between")
+            let minEdge = min(leftMax, rightMax)
+            water += (minEdge - height[idx])
+            if leftMax <= rightMax {
+                print("left")
+                i += 1
+                idx = i
+            } else {
+                print("right")
+                j -= 1
+                idx = j
+            }
+        } else {
+            // local maxima, height > min(leftMax, rightMax)
+            print("local maxima")
+            if leftMax <= rightMax {
+                leftMax = height[idx]
+
+                print("leftMax \(leftMax)")
+            } else {
+                rightMax = height[idx]
+                print("rightMax \(rightMax)")
+            }
+            if leftMax <= rightMax {
+                i += 1
+                idx = i
+            } else {
+                j -= 1
+                idx = j
+            }
+        }
+        print("water \(water)")
+    }
+    return water
+}
+/////////// 0 1 2 3 4 5 6 7 8 9 10 11
+print(trap([4,2,0,3,2,5]))
