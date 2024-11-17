@@ -1,0 +1,35 @@
+func maxVowels(_ s: String, _ k: Int) -> Int {
+    func containsVowel(char: Character) -> Bool {
+        switch char {
+        case "a", "e", "i", "o", "u":
+            return true
+        default:
+            false
+        }
+        return false
+    }
+    var maxVowel = 0
+        var tempVowel = 0
+        for (idx, ele) in s.enumerated() {
+            if idx < k {
+                if containsVowel(char: ele) {
+                    tempVowel += 1
+                    if tempVowel > maxVowel {
+                        maxVowel = tempVowel
+                    }
+                }
+            } else {
+                let windowEle = s[s.index(s.startIndex, offsetBy: idx - k)]
+                if containsVowel(char: windowEle) {
+                    tempVowel -= 1
+                }
+                if containsVowel(char: ele) {
+                    tempVowel += 1
+                    if tempVowel > maxVowel {
+                        maxVowel = tempVowel
+                    }
+                }
+            }
+        }
+        return maxVowel
+}
