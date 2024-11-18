@@ -1,0 +1,52 @@
+func longestOnes(_ nums: [Int], _ k: Int) -> Int {
+    var longest = 0
+    var startIndex = -1
+    var remainingK = k
+    var i = 0
+    while i < nums.count {
+        print("i \(i)")
+        if nums[i] == 1 {
+            print(nums[i], "14")
+            // start index if not started
+            if startIndex == -1 {
+                startIndex = i
+            }
+        } else if nums[i] == 0 {
+            if remainingK > 0 {
+                print(nums[i], "20")
+                // try to flip this position and increase sequence
+                remainingK -= 1
+                if startIndex == -1 {
+                    startIndex = i
+                }
+            } else if remainingK == 0 {
+                // break the flipping position and find new startIndex
+                print(nums[i], "29")
+                if startIndex != -1 {
+                    while startIndex <= i && remainingK == 0 {
+                        print(nums[i], "31")
+                        if nums[startIndex] == 0 {
+                            // flipping point
+                            remainingK += 1
+                        }
+                        // nums[startIndex] == 1
+                        // move next
+                        startIndex += 1
+                        print("while si \(startIndex) remainingk \(remainingK)")
+                    }
+                    // flip zero
+                    if remainingK > 0 {
+                        remainingK -= 1
+                    }
+                }
+            }
+        }
+        if startIndex != -1 && (i - startIndex + 1) > longest {
+            longest = i - startIndex + 1
+        }
+        i += 1
+    }
+    return longest
+}
+
+print(longestOnes([0,0,0,0], 0))
