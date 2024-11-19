@@ -1,0 +1,28 @@
+func longestSubarray(_ nums: [Int]) -> Int {
+    var max = 0
+    var left = 0
+    var partialSum = 0
+
+    for num in nums {
+        if num == 0 {
+            if left + partialSum > max {
+                max = left + partialSum
+            }
+            // Left Right reversal
+            left = partialSum
+            partialSum = 0
+        }
+        if num == 1 {
+            partialSum += 1
+            if left + partialSum > max {
+                max = left + partialSum
+            }
+        }
+    }
+    if max == nums.count {
+        return max - 1
+    }
+    return max
+}
+
+print(longestSubarray([1]))
