@@ -1,0 +1,150 @@
+class Solution {
+    class Node {
+    let val: (row: Int, column: Int)
+    var next: Node?
+
+    init(val: (row: Int, column: Int), next: Node? = nil) {
+        self.val = val
+        self.next = next
+    }
+}
+
+class Queue {
+    var head: Node?
+
+    func enqueue(_ val: (row: Int, column: Int)) {
+//        defer {
+//            printQueue()
+//        }
+
+        let node = Node(val: val, next: nil)
+        if head == nil {
+            // first element
+            head = node
+        } else {
+            var tempHead = head
+            while tempHead?.next != nil {
+                tempHead = tempHead?.next
+            }
+            tempHead?.next = node
+        }
+    }
+
+    func isEmpty() -> Bool {
+        head == nil
+    }
+
+    func printQueue() {
+        var tempHead = head
+        while tempHead != nil {
+            print("\(tempHead?.val.row ?? -1), \(tempHead?.val.column ?? -1) ->")
+            tempHead = tempHead?.next
+        }
+    }
+
+    func dequeue() -> (row: Int, column: Int)? {
+//        defer {
+//            printQueue()
+//        }
+        // fifo
+        if head == nil {
+            return nil
+        } else {
+            var tempHead = head
+            head = head?.next
+            tempHead?.next = nil
+            return tempHead?.val
+        }
+    }
+}
+    func orangesRotting(_ grid: [[Int]]) -> Int {
+        if grid.isEmpty { return -1 }
+        var newGrid = grid
+        var rows = newGrid.count
+        var columns = newGrid[0].count
+        //print("rows: \(rows), columns: \(columns)")
+        let queue = Queue()
+        let delimiter: (row: Int, column: Int) = (-1,-1)
+        var count: Int = -1
+        var hasFreshOranges = false
+        
+        for i in 0..<rows {
+            for j in 0..<columns {
+                // search for rotten oranges
+                if newGrid[i][j] == 2 {
+                    // enqueue it
+                    queue.enqueue((row: i, column: j))
+                    //print("first rotten: \(i), \(j)")
+                }
+                if newGrid[i][j] == 1 {
+                    hasFreshOranges = true
+                }
+            }
+        }
+        if !queue.isEmpty() {
+            // add delimiter
+            queue.enqueue(delimiter)
+        }
+
+        if queue.isEmpty() { return hasFreshOranges ? -1 : 0 }
+
+        // dequeue
+        while !queue.isEmpty() {
+            if let node = queue.dequeue() {
+                //print("dequed: \(node.row), \(node.column)")
+                // if delimiter, incraese count, enqueue delimiter
+                if node == delimiter {
+                    count += 1
+                    if !queue.isEmpty() {
+                        queue.enqueue(delimiter)
+                        //print("enqueued: delimeter")
+                    }
+                } else {
+                    // enqueue all oranges which are fresh: 1 and mark them rotten: 2
+                    // down
+                    //print("108: \(newGrid[1][0])")
+                    if (node.row + 1 >= 0 && node.row + 1 < rows) && newGrid[node.row + 1][node.column] == 1 {
+                        queue.enqueue((row: node.row + 1, column: node.column))
+                        //print("enqueued 4: \(node.row + 1), \(node.column)")
+                        // mark as rotten
+                        newGrid[node.row + 1][node.column] = 2
+                    }
+                    // left
+                    if (node.column - 1 >= 0 && node.column - 1 < columns) && newGrid[node.row][node.column - 1] == 1 {
+                        queue.enqueue((row: node.row, column: node.column - 1))
+                        //print("enqueued 1: \(node.row), \(node.column - 1)")
+                        // mark as rotten
+                        newGrid[node.row][node.column - 1] = 2
+                    }
+                    // right
+                    if (node.column + 1 >= 0 && node.column + 1 < columns) && newGrid[node.row][node.column + 1] == 1 {
+                        queue.enqueue((row: node.row, column: node.column + 1))
+                        //print("enqueued 2: \(node.row), \(node.column + 1)")
+                        // mark as rotten
+                        newGrid[node.row][node.column + 1] = 2
+                    }
+                    // up
+                    if (node.row - 1 >= 0 && node.row - 1 < rows) && newGrid[node.row - 1][node.column] == 1 {
+                        queue.enqueue((row: node.row - 1, column: node.column))
+                        //print("enqueued 3: \(node.row - 1), \(node.column)")
+                        // mark as rotten
+                        newGrid[node.row - 1][node.column] = 2
+                    }
+
+                }
+            }
+        }
+
+        // if grid has any fresh orange return -1
+        //[[2,1,1],[0,1,1],[1,0,1]]
+        for i in 0..<rows {
+            for j in 0..<columns {
+                // search for first fresh orange
+                if newGrid[i][j] == 1 {
+                    return -1
+                }
+            }
+        }
+        return count
+    }
+}
