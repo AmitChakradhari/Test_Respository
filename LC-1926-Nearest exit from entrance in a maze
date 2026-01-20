@@ -1,0 +1,100 @@
+class Solution {
+    func nearestExit(_ maze: [[Character]], _ entrance: [Int]) -> Int {
+        if maze.isEmpty { return -1 }
+        var rows = maze.count
+        var columns = maze[0].count
+        var matrix = maze
+        // marker for entrance
+        matrix[entrance[0]][entrance[1]] = "x"
+        let distance = dfs(a: &matrix, pos: (entrance[0], entrance[1]), d: 0, rows: rows, columns: columns, minD: 0)
+        return distance
+    }
+
+    func dfs(a: inout[[Character]], pos: (row: Int, column: Int), d: Int, rows: Int, columns: Int, minD: Int) -> Int {
+        // if not valid position, return -1
+        //print("curr pos: \(pos.row), \(pos.column)")
+        guard (pos.row >= 0 && pos.row < rows) && (pos.column >= 0 && pos.column < columns) else { return -1 }
+
+        // Check if the position is not blocked
+        if a[pos.row][pos.column] == "+" { return -1 }
+
+        // check if headed back to entrace
+        if (a[pos.row][pos.column] == "x") && d > 0 {
+            return -1
+        } else if (pos.row == 0 || pos.row == rows - 1 || pos.column == 0 || pos.column == columns - 1) && (a[pos.row][pos.column] != "x") {
+            // check if position is in boundary and is not the entrance
+            return d + 1
+        } else {
+            // mark the position visited if its not the entrance
+            var newD = d
+            var newMinD = minD
+
+            if a[pos.row][pos.column] != "x" {
+                a[pos.row][pos.column] = "+"
+                newD = d + 1 // distance will be increased by 1
+            }
+
+            if newD >= newMinD && newMinD > 0 {
+                return -1
+            }
+            // we can go up , down , left, right
+            // up
+            let posUp = (pos.row - 1, pos.column)
+            let distanceUp = dfs(a: &a, pos: posUp, d: newD, rows: rows, columns: columns, minD: minD)
+            if newMinD == 0 && distanceUp > 0 {
+                newMinD = distanceUp
+            } else if newMinD > 0 && distanceUp > 0 {
+                newMinD = min(newMinD, distanceUp)
+            }
+            // down
+            let posDown = (pos.row + 1, pos.column)
+            let distanceDown = dfs(a: &a, pos: posDown, d: newD, rows: rows, columns: columns, minD: newMinD)
+
+            if newMinD == 0 && distanceDown > 0 {
+                newMinD = distanceDown
+            } else if newMinD > 0 && distanceDown > 0 {
+                newMinD = min(newMinD, distanceDown)
+            }
+
+            // left
+            let posLeft = (pos.row, pos.column - 1)
+            let distanceLeft = dfs(a: &a, pos: posLeft, d: newD, rows: rows, columns: columns, minD: newMinD)
+
+            if newMinD == 0 && distanceLeft > 0 {
+                newMinD = distanceLeft
+            } else if newMinD > 0 && distanceLeft > 0 {
+                newMinD = min(newMinD, distanceLeft)
+            }
+            // right
+            let posRight = (pos.row, pos.column + 1)
+            let distanceRight = dfs(a: &a, pos: posRight, d: newD, rows: rows, columns: columns, minD: newMinD)
+
+            if newMinD == 0 && distanceRight > 0 {
+                newMinD = distanceRight
+            } else if newMinD > 0 && distanceRight > 0 {
+                newMinD = min(newMinD, distanceRight)
+            }
+            // take the min +ve
+            var distance = -1
+            for dist in [distanceUp, distanceDown, distanceLeft, distanceRight] {
+                if dist > 0 && distance > 0 {
+                    distance = min(dist, distance)
+                } else if dist > 0 {
+                    distance = dist
+                }
+            }
+            //print("dis: \(distance)")
+            // revert current blocked position
+            if a[pos.row][pos.column] != "x" {
+                // block the node if all direction cannot lead to dest
+                if (distanceUp == -1 && distanceDown == -1 && distanceRight == -1 && distanceLeft == -1) {
+                    a[pos.row][pos.column] = "+"
+                } else {
+                    a[pos.row][pos.column] = "."
+                }
+            }
+            return distance
+
+        }
+    }
+}
