@@ -1,0 +1,83 @@
+class Solution {
+    func numTilings(_ n: Int) -> Int {
+        var mat: [[Int]] = Array(repeating: Array(repeating: -1, count: n+1), count: n+1)
+        if (n == 1){ return  1 }
+        let mod: Double = pow(10, 7) + 7
+        mat[0][0] = 1
+        mat[1][1] = 1
+        mat[2][1] = 1
+        mat[1][2] = 1
+        for i in 0 ... n {
+            if i % 2 == 0 {
+                mat[0][i] = 1
+                mat[i][0] = 1
+            } else {
+                mat[0][i] = 0
+                mat[i][0] = 0
+            }
+        }
+        return tilings(n1: n, n2: n, mat: &mat) % Int(mod)
+    }
+
+    func tilings(n1: Int, n2: Int, mat: inout [[Int]]) -> Int {
+        print(n1, n2)
+        var cnt = 0
+        if mat[n1][n2] > -1 {
+            // print("return : \(n1), \(n2): \(mat[n1][n2])")
+            return mat[n1][n2]
+        }
+
+        if n1 == n2 {
+            if n1 >= 2 && n2 >= 2 {
+                // either both has 2 domino horizontally
+                cnt += tilings(n1: n1-2, n2: n2-2, mat: &mat)
+                // print("39: \(cnt)")
+                // or 1 domino vertically
+                cnt += tilings(n1: n1-1, n2: n2-1, mat: &mat)
+                // print("42: \(cnt)")
+                // or 1 tromino 2 up
+                cnt += tilings(n1: n1-2, n2: n2-1, mat: &mat)
+                // print("44: \(cnt)")
+                // or 1 tromino 1 up
+                cnt += tilings(n1: n1-1, n2: n2-2, mat: &mat)
+                // print("48: \(cnt)")
+            }
+        } else {
+            if (n1 >= 2 && n2 >= 2) {
+                if (abs(n1-n2) == 1) {
+                    if n1 > n2 { // ending tile
+                        cnt += tilings(n1: n1-2, n2: n2-1, mat: &mat)
+                        // print("55: \(cnt)")
+                    } else {
+                        cnt += tilings(n1: n1-1, n2: n2-2, mat: &mat)
+                        // print("58: \(cnt)")
+                    }
+                }
+                // both horizontal
+//                cnt += tilings(n1: n1-2, n2: n2-2, mat: &mat)
+//                print("63: \(cnt)")
+                cnt += max(tilings(n1: n1-2, n2: n2, mat: &mat), tilings(n1: n1, n2: n2-2, mat: &mat))
+            } else if (n1 == 2 && n2 == 1) {
+                cnt += tilings(n1: n1-2, n2: n2-1, mat: &mat)
+                // print("66: \(cnt)")
+            } else if (n1 == 1 && n2 == 2) {
+                cnt += tilings(n1: n1-1, n2: n2-2, mat: &mat)
+                // print("69: \(cnt)")
+            } else if (n1 >= 2) && (abs(n1-n2) >= 2) {
+                cnt += tilings(n1: n1-2, n2: n2, mat: &mat)
+                // print("72: \(cnt)")
+            } else if (n2 >= 2) && (abs(n1-n2) >= 2) {
+                cnt += tilings(n1: n1, n2: n2-2, mat: &mat)
+                // print("74: \(cnt)")
+            }
+        }
+
+        mat[n1][n2] = cnt
+        mat[n2][n1] = cnt
+        // print("count: \(cnt)")
+        return cnt
+    }
+}
+
+let s = Solution()
+print(s.numTilings(30))
