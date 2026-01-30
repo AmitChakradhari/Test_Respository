@@ -1,0 +1,26 @@
+class Solution {
+    func findCircleNum(_ isConnected: [[Int]]) -> Int {
+        if isConnected.isEmpty { return 0 }
+        let rows = isConnected.count
+        let columns = isConnected[0].count
+
+        var vis: [Bool] = .init(repeating: false, count: rows)
+        var count = 0
+        for i in 0 ..< vis.count {
+            if vis[i] == false {
+                count += 1
+                dfs(idx: i, mat: isConnected, vis: &vis)
+            }
+        }
+        return count
+    }
+
+    func dfs(idx: Int, mat: [[Int]], vis: inout [Bool]) {
+        vis[idx] = true
+        for i in 0 ..< vis.count {
+            if mat[idx][i] == 1 && vis[i] == false {
+                dfs(idx: i, mat: mat, vis: &vis)
+            }
+        }
+    }
+}
