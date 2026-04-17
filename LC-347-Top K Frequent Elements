@@ -1,0 +1,196 @@
+class Solution {
+    struct Tup: Comparable {
+        let key: Int
+        let value: Int
+        static func < (lhs: Solution.Tup, rhs: Solution.Tup) -> Bool {
+            return lhs.value < rhs.value
+        }
+    }
+
+    func topKFrequent(_ nums: [Int], _ k: Int) -> [Int] {
+        var dict: [Int: Int] = [:]
+        for num in nums {
+            if let cnt = dict[num] {
+                // present
+                dict[num] = cnt + 1
+            } else {
+                dict[num] = 1
+            }
+        }
+        var result: [Int] = []
+        var maxHeap = Heap<Tup>(type: .maxHeap)
+        for (key, value) in dict {
+            maxHeap.insert(val: Tup(key: key, value: value))
+        }
+        var tempK = k
+        while tempK > 0 {
+            if let val = maxHeap.pop() {
+                result.append(val.key)
+            }
+            tempK -= 1
+        }
+        return result
+    }
+}
+
+let s  = Solution()
+print(s.topKFrequent([1,2,1,2,1,2,3,1,3,2], 2))
+
+
+
+
+
+
+
+
+///////// Heap
+final class Heap<T: Comparable> {
+
+    enum HeapType: String {
+        case minHeap
+        case maxHeap
+    }
+
+    var heap: [T] = []
+
+    var type: HeapType = .maxHeap
+
+    init(type: HeapType = .maxHeap) {
+        self.type = type
+    }
+
+    func insert(val: T) {
+        heap.append(val)
+        heapifyUp(idx: heap.count - 1)
+        //print("insert: \(heap)")
+    }
+
+    func pop() -> T? {
+        guard !heap.isEmpty else { return nil }
+        let max = heap.first
+        (heap[0], heap[heap.count - 1]) = (heap[heap.count - 1], heap[0])
+        heap.removeLast()
+        if !heap.isEmpty {
+            heapifyDown(idx: 0)
+        }
+        //print("popMax: \(max ?? -1) \(heap)")
+        return max
+    }
+
+    func parentIndex(idx: Int) -> Int {
+        (idx-1)/2
+    }
+
+    func leftIndex(idx: Int) -> Int {
+        (2*idx) + 1
+    }
+
+    func rightIndex(idx: Int) -> Int {
+        (2*idx) + 2
+    }
+
+    func hasParent(idx: Int) -> Bool {
+        Double((idx-1))/2 >= 0
+    }
+
+    func leftChild(idx: Int) -> T? {
+        let leftIndex = leftIndex(idx: idx)
+        if leftIndex < heap.count {
+            // has left child
+            return heap[leftIndex]
+        } else {
+            return nil
+        }
+    }
+
+    func rightChild(idx: Int) -> T? {
+        let rightIndex = rightIndex(idx: idx)
+        if rightIndex < heap.count {
+            // has left child
+            return heap[rightIndex]
+        } else {
+            return nil
+        }
+    }
+
+    func heapifyUp(idx: Int) {
+        var currentIdx = idx
+
+        while hasParent(idx: currentIdx) {
+            let parentIdx = parentIndex(idx: currentIdx)
+            if (type == .maxHeap) && heap[currentIdx] > heap[parentIdx] {
+                // swap
+                var temp = heap[currentIdx]
+                heap[currentIdx] = heap[parentIdx]
+                heap[parentIdx] = temp
+                currentIdx = parentIdx
+            } else if (type == .minHeap) && heap[currentIdx] < heap[parentIdx] {
+                // swap
+                var temp = heap[currentIdx]
+                heap[currentIdx] = heap[parentIdx]
+                heap[parentIdx] = temp
+                currentIdx = parentIdx
+            } else {
+                break
+            }
+        }
+    }
+
+    func heapifyDown(idx: Int) {
+        var currentIdx = idx
+        var highestIdx = idx
+        var smallestIdx = idx
+
+        if type == .maxHeap {
+            while true {
+                //print("81: \(currentIdx)")
+                if let leftChild = leftChild(idx: currentIdx),
+                   heap[currentIdx] < leftChild {
+                    highestIdx = leftIndex(idx: currentIdx)
+                    //print("85: \(highestIdx)")
+                }
+                if let rightChild = rightChild(idx: currentIdx),
+                   heap[highestIdx] < rightChild {
+                    highestIdx = rightIndex(idx: currentIdx)
+                    //print("90: \(highestIdx)")
+                }
+
+                if highestIdx != currentIdx {
+                    // swap
+                    var temp = heap[currentIdx]
+                    heap[currentIdx] = heap[highestIdx]
+                    heap[highestIdx] = temp
+                    currentIdx = highestIdx
+                } else {
+                    //print("break")
+                    break
+                }
+            }
+        } else if type == .minHeap {
+            while true {
+                //print("81: \(currentIdx)")
+                if let leftChild = leftChild(idx: currentIdx),
+                   heap[currentIdx] > leftChild {
+                    smallestIdx = leftIndex(idx: currentIdx)
+                    //print("85: \(highestIdx)")
+                }
+                if let rightChild = rightChild(idx: currentIdx),
+                   heap[smallestIdx] > rightChild {
+                    smallestIdx = rightIndex(idx: currentIdx)
+                    //print("90: \(highestIdx)")
+                }
+
+                if smallestIdx != currentIdx {
+                    // swap
+                    var temp = heap[currentIdx]
+                    heap[currentIdx] = heap[smallestIdx]
+                    heap[smallestIdx] = temp
+                    currentIdx = smallestIdx
+                } else {
+                    //print("break")
+                    break
+                }
+            }
+        }
+    }
+}
