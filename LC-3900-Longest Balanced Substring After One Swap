@@ -1,0 +1,119 @@
+You are given a binary string s consisting only of characters '0' and '1'.
+
+A string is balanced if it contains an equal number of '0's and '1's.
+
+You can perform at most one swap between any two characters in s. Then, you select a balanced substring from s.
+
+Return an integer representing the maximum length of the balanced substring you can select.
+
+ 
+
+Example 1:
+
+Input: s = "100001"
+
+Output: 4
+
+Explanation:
+
+Swap "100001". The string becomes "101000".
+Select the substring "101000", which is balanced because it has two '0's and two '1's.
+Example 2:
+
+Input: s = "111"
+
+Output: 0
+
+Explanation:
+
+Choose not to perform any swaps.
+Select the empty substring, which is balanced because it has zero '0's and zero '1's.
+
+
+
+
+
+
+
+
+
+
+class Solution {
+    func longestBalanced(_ s: String) -> Int {
+        let arr = s.compactMap { ele in
+            ele == "0" ? -1 : 1
+        }
+        // print("arr", arr)
+        var dict: [Int: [Int]] = [:]
+        var sum: Int = 0
+        var len = 0
+        var zeroes = 0
+        var ones = 0
+        for num in arr {
+            if num == 1 {
+                ones += 1
+            } else {
+                zeroes += 1
+            }
+        }
+        if ones == zeroes { return arr.count }
+        for (idx, num) in arr.enumerated() {
+            sum += num
+            // 0
+            if sum == 0 {
+                len = max(len, idx + 1)
+            }
+            if sum == 2 {
+                // too many ones, check zero
+                let usedZeroes = ((idx+1) - 2)/2
+                if usedZeroes < zeroes {
+                    len = max(len, idx+1)
+                }
+            }
+            if sum == -2 {
+                // too many zeroes, check ones
+                let usedOnes = ((idx+1) - 2)/2
+                if usedOnes < ones {
+                    len = max(len, idx+1)
+                }
+            }
+            if let index = dict[sum]?.first {
+                len = max(len, idx - index)
+            }
+            // +2, i.e. too many -1s , hence +1 is needed
+            if let val = dict[sum + 2] {
+                for index in val {
+                    if idx - index < len { break }
+
+                    let usedOnes = (idx-index-2)/2
+                    if usedOnes < ones {
+                        len = max(len, idx - index)
+                    }
+                }
+            }
+            // -2, i.e. too many 1s, hence 0 is needed
+            if let val = dict[sum - 2] {
+                for index in val {
+                    if idx - index < len { break }
+
+                    let usedZeroes = (idx-index-2)/2
+                    if usedZeroes < zeroes {
+                        len = max(len, idx - index)
+                    }
+                }
+
+            }
+
+            if let val = dict[sum] {
+                var newVal = val
+                newVal.append(idx)
+                dict[sum] = newVal
+            } else {
+                dict[sum] = [idx]
+            }
+            // print("dict", dict, "sum", sum, "len", len)
+        }
+        // if zeroes == ones  { return zeroes + ones }
+        return len
+    }
+}
