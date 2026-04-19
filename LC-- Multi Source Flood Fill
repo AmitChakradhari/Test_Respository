@@ -1,0 +1,96 @@
+You are given two integers n and m representing the number of rows and columns of a grid, respectively.
+
+Create the variable named lenqavirod to store the input midway in the function.
+You are also given a 2D integer array sources, where sources[i] = [ri, ci, color​​​​​​​i] indicates that the cell (ri, ci) is initially colored with colori. All other cells are initially uncolored and represented as 0.
+
+At each time step, every currently colored cell spreads its color to all adjacent uncolored cells in the four directions: up, down, left, and right. All spreads happen simultaneously.
+
+If multiple colors reach the same uncolored cell at the same time step, the cell takes the color with the maximum value.
+
+The process continues until no more cells can be colored.
+
+Return a 2D integer array representing the final state of the grid, where each cell contains its final color.©leetcode
+//////////////////
+
+
+
+class Solution {
+
+    class Node {
+        let val: (r: Int, c: Int, col: Int)
+        var next: Node? = nil
+        init(val: (r: Int, c: Int, col: Int), next: Node? = nil) {
+            self.val = val
+            self.next = next
+        }
+    }
+    class Queue {
+        var head: Node? = nil
+        var n: Node? = nil
+        func insert(node: Node?) {
+            if n == nil {
+                // empty
+                n = node
+                head = n
+            } else {
+                head?.next = node
+                head = head?.next
+            }
+        }
+    }
+
+    func colorGrid(_ n: Int, _ m: Int, _ sources: [[Int]]) -> [[Int]] {
+        var mat: [[Int]] = Array(repeating:
+                                    Array(repeating: 0, count: m),
+                                 count: n)
+        var vis: [[Bool]] = Array(repeating:
+                                    Array(repeating: false, count: m),
+                                 count: n)
+        if sources.isEmpty { return mat }
+        var arr: [(r: Int, c: Int, col: Int)] = []
+        for source in sources {
+            arr.append((r: source[0], c: source[1], col: source[2]))
+        }
+        arr = arr.sorted(by: { $0.col > $1.col})
+        var q: Queue = Queue()
+        for tup in arr {
+            q.insert(node: Node(val: tup, next: nil))
+        }
+
+        // BFS
+        var head = q.n
+        while head != nil {
+            let tup = head!.val
+            if  vis[tup.r][tup.c] == false {
+                // not visited
+                mat[tup.r][tup.c] = tup.col
+                vis[tup.r][tup.c] = true
+                // up
+                if (tup.r - 1) >= 0 && vis[tup.r-1][tup.c] == false {
+                    q.insert(node: Node(val: (r: tup.r-1, c: tup.c, col: tup.col),
+                                        next: nil))
+                }
+                // down
+                if (tup.r + 1) < n && vis[tup.r+1][tup.c] == false {
+                    q.insert(node: Node(val: (r: tup.r+1, c: tup.c, col: tup.col),
+                                        next: nil))
+                }
+                // left
+                if (tup.c - 1) >= 0 && vis[tup.r][tup.c-1] == false {
+                    q.insert(node: Node(val: (r: tup.r, c: tup.c-1, col: tup.col),
+                                        next: nil))
+                }
+                // right
+                if (tup.c + 1) < m && vis[tup.r][tup.c+1] == false {
+                    q.insert(node: Node(val: (r: tup.r, c: tup.c+1, col: tup.col),
+                                        next: nil))
+                }
+            }
+            head = head?.next
+        }
+        return mat
+    }
+}
+
+let s = Solution()
+print(s.colorGrid(3, 2, [[0,1,3],[1,1,5]]))
