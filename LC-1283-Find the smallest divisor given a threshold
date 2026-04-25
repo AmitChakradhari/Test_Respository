@@ -1,5 +1,29 @@
 https://leetcode.com/problems/find-the-smallest-divisor-given-a-threshold/description/
+//////////// 1
 
+class Solution {
+    func smallestDivisor(_ nums: [Int], _ threshold: Int) -> Int {
+        if nums.isEmpty { return 0 }
+        var l = nums.min() ?? 0
+        var h = nums.max() ?? 0
+
+        while l <= h {
+            var m = (l+h)/2
+            var t = 0
+            for num in nums {
+                t += Int(ceil(Float(num)/Float(m)))
+            }
+            if t > threshold {
+                l = m + 1
+            } else {
+                h = m - 1
+            }
+        }
+        return l
+    }
+}
+
+/////////////// 2
 func smallestDivisor(_ nums: [Int], _ threshold: Int) -> Int {
     if nums.isEmpty { return 0 }
     var low = nums[0]
