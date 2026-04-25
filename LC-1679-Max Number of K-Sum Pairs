@@ -1,3 +1,31 @@
+class Solution {
+    func maxOperations(_ nums: [Int], _ k: Int) -> Int {
+        if nums.isEmpty { return 0 }
+        var d: [Int: Int] = [:]
+        var c = 0
+        for (i, num) in nums.enumerated() {
+            if let cnt = d[k - num],
+            cnt > 0 {
+                // pair exists, remove the partner, increment c
+                c += 1
+                d[k-num] = cnt - 1
+            } else {
+                // add number
+                if let cnt = d[num] {
+                    d[num] = cnt + 1
+                } else {
+                    d[num] = 1
+                }
+
+            }
+        }
+        return c
+    }
+}
+
+//////////////////// OLD
+
+
 func maxOperations(_ nums: [Int], _ k: Int) -> Int {
     var dict: [Int: Int] = [:]
     for num in nums {
