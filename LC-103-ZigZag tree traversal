@@ -84,3 +84,99 @@ class Solution {
     return result
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/////// Array reverse
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     public var val: Int
+ *     public var left: TreeNode?
+ *     public var right: TreeNode?
+ *     public init() { self.val = 0; self.left = nil; self.right = nil; }
+ *     public init(_ val: Int) { self.val = val; self.left = nil; self.right = nil; }
+ *     public init(_ val: Int, _ left: TreeNode?, _ right: TreeNode?) {
+ *         self.val = val
+ *         self.left = left
+ *         self.right = right
+ *     }
+ * }
+ */
+class Solution {
+    class Node {
+        let val: TreeNode
+        var next: Node?
+        init(_ val: TreeNode, next: Node? = nil) {
+            self.val = val
+            self.next = next
+        }
+    }
+
+    class Queue {
+        var node: Node?
+        var h: Node?
+
+        func enqueue(_ n: TreeNode?) {
+            guard let n else { return }
+            let no = Node(n)
+            if node == nil {
+                node = no
+                h = node
+            } else {
+                h?.next = no
+                h = h?.next
+            }
+        }
+
+    }
+    func zigzagLevelOrder(_ root: TreeNode?) -> [[Int]] {
+        guard root != nil else { return [] }
+        var d = 1 // direction
+        var res: [[Int]] = []
+        var r: [Int] = []
+        let delimeter = -20
+        var q = Queue()
+        q.enqueue(root)
+        q.enqueue(TreeNode(delimeter))
+        var h = q.node
+        while h != nil {
+            if let val = h?.val.val {
+                if val == delimeter {
+                    // add another delimeter
+                    if h?.next != nil {
+                        q.enqueue(TreeNode(delimeter))
+                    }
+                    if d == -1 {
+                        r = r.reversed()
+                    }
+                    res.append(r)
+                    //print("65, \(r)")
+                    r = []
+                    d = d * -1
+                } else {
+                    //print("val, \(val)")
+                    r.append(h!.val.val)
+                    if let v = h?.val.left {
+                        q.enqueue(v)
+                    }
+                    if let v = h?.val.right {
+                        q.enqueue(v)
+                    }
+                    //print(r, "r")
+                }
+            }
+            h = h?.next
+        }
+        return res
+    }
+}
