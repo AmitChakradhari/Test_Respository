@@ -1,3 +1,22 @@
+// Optimised: Space O(1)
+class Solution {
+    func productExceptSelf(_ nums: [Int]) -> [Int] {
+        var r = nums
+        var leftProduct = 1
+        for i in 0..<nums.count {
+            r[i] = leftProduct
+            leftProduct *= nums[i]
+        }
+        var rightProduct = 1
+        for j in stride(from: nums.count - 1, to: -1, by: -1) {
+            r[j] *= rightProduct
+            rightProduct *=  nums[j]
+        }
+        return r
+    }
+}
+
+// Space O(n)
 func productExceptSelf(_ nums: [Int]) -> [Int] {
     var prefixArray: [Int] = nums
     var suffixArray: [Int] = nums
