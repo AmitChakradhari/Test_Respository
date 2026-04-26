@@ -5,6 +5,7 @@ func distributeCookies(_ cookies: [Int], _ k: Int) -> Int {
     let chocos = cookies.sorted(by: >)
     var min = chocos[0] // first element
     kArray[0] = min
+    /// DFS + backtracking
     return distribute(chocos, result: &kArray, index: 1, k: k, cookiesCount: cookies.count)
 }
 
@@ -14,6 +15,7 @@ func distribute(_ cookies: [Int], result: inout [Int], index: Int, k: Int, cooki
         return result.max() ?? 0
     }
     var min = Int.max
+    // try to add the item at all the position in k array
     for i in 0..<k {
         result[i] += cookies[index]
         //print("27: result \(result) index: \(index)")
@@ -21,7 +23,7 @@ func distribute(_ cookies: [Int], result: inout [Int], index: Int, k: Int, cooki
         if min > cnt {
             min = cnt
         }
-        // unwind
+        // unwind, backtracking
         result[i] -= cookies[index]
     }
     //print("35: \(min)")
