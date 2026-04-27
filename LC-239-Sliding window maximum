@@ -1,107 +1,124 @@
 https://leetcode.com/problems/sliding-window-maximum/description/
 
-class Node {
-    let value: (value: Int, index: Int) // value
+func maxSlidingWindow(_ nums: [Int], _ k: Int) -> [Int] {
+    let deque = Dequeue<(val: Int, i: Int)>()
+    var r: [Int] = []
+    var w = 0
+    for (idx, num) in nums.enumerated() {
+        //deque.poDeque()
+        if let fi = deque.first?.value.i,
+           let li = deque.last?.value.i,
+           (idx >= k) {
+            // window is exceeding k, trim it down
+            // remove either first or last
+            if (idx - k + 1) > fi {
+                deque.deque()
+            } else if (idx - k + 1) > li {
+                deque.dequeFromEnd()
+            }
+        }
+        // if deque is empty, then add the element
+        if deque.first == nil {
+            deque.enque((val: num, i: idx))
+        } else {
+            // if deque is not nil
+            // check if this element is maximum
+            if let f = deque.first,
+               num >= f.value.val {
+                // remove all the values from deque
+                deque.first = nil
+                deque.last = nil
+                // add node
+                deque.enque((val: num, i: idx))
+            } else if var l = deque.last,
+                    l.value.val < num {
+                // check if this element lies in between first and last. [2,1,3,2,5,-1,5,2,3,1,3,4,5]
+
+                // remove values till num <= val
+                while l.value.val <= num {
+                    deque.dequeFromEnd()
+                    l = deque.last!
+                }
+                // add item
+                deque.enque((val: num, i: idx))
+            } else {
+                // smallest, add in the last
+                deque.enque((val: num, i: idx))
+            }
+        }
+        if idx >= k - 1,
+           let f = deque.first {
+            r.append(f.value.val)
+        }
+    }
+    return r
+}
+
+
+print(maxSlidingWindow([2,1,3,2,5,-1,5,2,3,1,3,4,5], 2))
+
+class Dequeue<T> {
+    var first: Node<T>?
+    var last: Node<T>?
+
+    func enque(_ n: T?) {
+        guard let n else { return }
+        let node = Node(n)
+        if first == nil {
+            // first node
+            first = node
+            last = node
+        } else {
+            last?.next = node
+            node.prev = last
+            last = last?.next
+        }
+    }
+
+    func deque() -> T? {
+        if first == nil {
+            // no element
+            return nil
+        } else {
+            // remove first
+            let next = first?.next
+            let val = first
+            val?.next = nil
+            next?.prev = nil
+            first = next
+            return val?.value
+        }
+    }
+
+    func poDeque() {
+        var h = first
+        var r = ""
+        while h != nil {
+            r.append("\(String(describing: h!.value)),")
+            h = h?.next
+        }
+        print(r)
+    }
+
+    func dequeFromEnd() -> T? {
+        if last == nil { return nil }
+        var curr = last
+        var prev = last?.prev
+        prev?.next = nil
+        curr?.prev = nil
+        last = prev
+        return last?.value
+    }
+}
+
+class Node<T> {
+    let value: T // value
     var prev: Node?
     var next: Node?
-    
-    init(value: (Int, Int), prev: Node? = nil, next: Node? = nil) {
+
+    init(_ value: T, prev: Node? = nil, next: Node? = nil) {
         self.value = value
         self.prev = prev
         self.next = next
     }
 }
-
-func maxSlidingWindow(_ nums: [Int], _ k: Int) -> [Int] {
-    
-    var deque: Node?
-    var first: Node?
-    var last: Node?
-    var result: [Int] = []
-    for i in 0 ..< nums.count {
-        print("i: \(i)")
-        if deque == nil {
-            // no elements, add elements
-            deque = Node(value: (nums[i], i))
-            first = deque
-            last = deque
-            print("35 deque nil")
-        } else {
-            // check if reached/ crosing the limit
-            if var lastIndex = last?.value.index,
-               var firstIndex = first?.value.index,
-               lastIndex - firstIndex >= k - 1 { // 2-0 , 3-1
-                // remove elements from the
-                print("41 limit reached")
-                while lastIndex - firstIndex >= k-1 {
-                    if firstIndex == lastIndex {
-                        // single element
-                        deque = nil
-                        first = nil
-                        last = nil
-                        print("48 single element:")
-                        break
-                    } else {
-                        let tempNode = first
-                        first = first?.next
-                        first?.prev = nil
-                        tempNode?.next = nil
-                        firstIndex = first?.value.index ?? firstIndex
-                        print("55 first Index: \(firstIndex)")
-                    }
-                }
-                // removed all elements to the left and updated first
-            }
-            if let firstValue = first?.value.value,
-                      var lastValue = last?.value.value {
-                // if not crossing the limit
-                // check the incoming value.
-                if nums[i] >= firstValue {
-                    // remove everything as this is the greatest value
-                    deque = nil
-                    deque = Node(value: (nums[i], i))
-                    first = deque
-                    last = deque
-                    print("62 greatest value: \(nums[i])")
-                } else if nums[i] >= lastValue {
-                    // remove values from last till num[i] < lastValue
-                    while nums[i] > lastValue {
-                        let temp = last
-                        last = last?.prev
-                        last?.next = nil
-                        temp?.prev = nil
-                        lastValue = last?.value.value ?? lastValue
-                    }
-                    print("72 bigger value than last: \(lastValue)")
-                    // after deleting add new element
-                    let node = Node(value: (nums[i], i))
-                    last?.next = node
-                    node.prev = last
-                    last = node
-                } else {
-                    // add new element
-                    let node = Node(value: (nums[i], i))
-                    last?.next = node
-                    node.prev = last
-                    last = node
-                    print("84 smaller element \(nums[i])")
-                }
-            } else {
-                // firstIndex is nil || lastindex is nil
-                print("control is coming here")
-                deque = Node(value: (nums[i], i))
-                first = deque
-                last = deque
-            }
-        }
-        if let firstElement = first?.value {
-            if i >= k - 1 {
-                result.append(firstElement.value)
-                print("92: added in result \(result) index: \(i)")
-            }
-        }
-    }
-            return result
-}
-
-print(maxSlidingWindow([1, -1], 1))
