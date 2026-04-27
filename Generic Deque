@@ -1,0 +1,65 @@
+class Dequeue<T> {
+    var first: Node<T>?
+    var last: Node<T>?
+
+    func enque(_ n: T?) {
+        guard let n else { return }
+        let node = Node(n)
+        if first == nil {
+            // first node
+            first = node
+            last = node
+        } else {
+            last?.next = node
+            node.prev = last
+            last = last?.next
+        }
+    }
+
+    func deque() -> T? {
+        if first == nil {
+            // no element
+            return nil
+        } else {
+            // remove first
+            let next = first?.next
+            let val = first
+            val?.next = nil
+            next?.prev = nil
+            first = next
+            return val?.value
+        }
+    }
+
+    func poDeque() {
+        var h = first
+        var r = ""
+        while h != nil {
+            r.append("\(String(describing: h!.value)),")
+            h = h?.next
+        }
+        print(r)
+    }
+
+    func dequeFromEnd() -> T? {
+        if last == nil { return nil }
+        var curr = last
+        var prev = last?.prev
+        prev?.next = nil
+        curr?.prev = nil
+        last = prev
+        return last?.value
+    }
+}
+
+class Node<T> {
+    let value: T // value
+    var prev: Node?
+    var next: Node?
+
+    init(_ value: T, prev: Node? = nil, next: Node? = nil) {
+        self.value = value
+        self.prev = prev
+        self.next = next
+    }
+}
