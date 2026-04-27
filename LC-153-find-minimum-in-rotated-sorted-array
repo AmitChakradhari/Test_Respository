@@ -1,0 +1,30 @@
+// 
+class Solution {
+    func findMin(_ nums: [Int]) -> Int {
+        if nums.isEmpty { return -1 }
+        if nums.count == 1 { return nums[0] }
+        if nums.count == 2 { return min(nums[0], nums[1])}
+        //print("1212")
+        let l = 0
+        let h = nums.count - 1
+        if nums[l] < nums[nums.count - 1] { return nums[0]}
+
+        let m = (l+h)/2
+        let minNum = Int.max
+        return min(find(nums, l:0, h: m) ?? minNum,
+                   find(nums, l:m, h: h) ?? minNum)
+    }
+
+    func find(_ nums: [Int], l: Int, h: Int) -> Int? {
+        if l == h { return nums[l] }
+        if nums[l] < nums [h] { return nums[l] } // strictly increasing
+        //print("l: \(l), h: \(h)")
+        let minNum = Int.max
+        let m = (l+h)/2
+        // if flipping point
+        //if (nums[l])
+        let lNum = find(nums, l: l, h: m) ?? minNum
+        let rNum = find(nums, l: m+1, h: h) ?? minNum
+        return min(lNum, rNum)
+    }
+}
