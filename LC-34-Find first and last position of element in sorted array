@@ -1,0 +1,43 @@
+// LC -34
+class Solution {
+    func searchRange(_ nums: [Int], _ target: Int) -> [Int] {
+        if nums.isEmpty { return [-1, -1] }
+        if target > nums[nums.count - 1] || target < nums[0] { return [-1, -1]}
+        var l = 0
+        var h = nums.count - 1
+
+        // find startIndex
+        var startIndex = -1
+        var endIndex = -1
+        while l <= h {
+            var m = (l+h)/2
+            if nums[m] < target {
+                l = m + 1
+            } else {
+                h = m - 1
+            }
+        }
+        //print("25, \(l), \(h)")
+        if nums[l] == target {
+            startIndex = l
+        } else {
+            return [-1, -1]
+        }
+
+        // reset, find lastIndex
+        l = 0
+        h = nums.count - 1
+        while l <= h {
+            var m = (l+h)/2
+            if nums[m] <= target {
+                l = m + 1
+            } else {
+                h = m - 1
+            }
+        }
+        if nums[h] == target {
+            endIndex = h
+        }
+        return [startIndex, endIndex]
+    }
+}
