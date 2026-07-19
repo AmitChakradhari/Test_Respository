@@ -1,0 +1,30 @@
+from typing import List
+
+class Solution:
+    def canFinish(self, numCourses: int, prerequisites: List[List[int]]) -> bool:
+        visited = [ False for _ in range(numCourses)]
+        completed = [ False for _ in range(numCourses)]
+        dependencies = [ [] for _ in range(numCourses)]
+        for course, prereq in prerequisites:
+            dependencies[course].append(prereq)
+        for course in range(numCourses):
+            if not self.dfs(course, dependencies, visited, completed):
+                return False
+        return True
+
+    def dfs(self, course: int, dependencies: List[List[int]], visited: List[bool], completed: List[bool]) -> bool:
+        if visited[course] and completed[course]:
+            return True
+        if visited[course] and not completed[course]:
+            return False
+        visited[course] = True
+        for prereq in dependencies[course]:
+            if not self.dfs(prereq, dependencies, visited, completed):
+                completed[prereq] = False
+                return False
+        completed[course] = True
+        return True
+
+
+s = Solution()
+print(s.canFinish(3, [[0,1], [2,0], [1,2]]))
